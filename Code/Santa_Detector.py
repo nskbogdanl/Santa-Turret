@@ -9,9 +9,12 @@ import torch
 import serial
 from pathlib import Path
 
+# ------------------------ DEVICE (CUDA / ROCm / CPU) ------------------------
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"🚀 Using device: {device}")
+
 # ------------------------ PATHS (CROSS-PLATFORM) ------------------------
 BASE_DIR = Path(__file__).resolve().parent
-
 MODEL_PATH = BASE_DIR / "YOLO" / "Santa_Claus_Weight.pt"
 
 # ------------------------ ARDUINO SETTINGS ------------------------
@@ -32,6 +35,7 @@ print("0. Program started")
 t0 = time.time()
 
 model = YOLO(str(MODEL_PATH))
+model.to(device)
 
 print(f"1. Model loaded in {time.time() - t0:.2f} sec")
 
@@ -40,7 +44,9 @@ torch.set_num_threads(4)
 print("2. Warming up model...")
 dummy = np.zeros((640, 640, 3), dtype=np.uint8)
 t_warm = time.time()
-model(dummy, imgsz=640, device="cpu", verbose=False)
+
+model(dummy, imgsz=640, device=device, verbose=False)
+
 print(f"3. Warm-up completed in {time.time() - t_warm:.2f} sec")
 
 # ------------------------ CAMERA ------------------------
@@ -71,7 +77,7 @@ try:
             frame,
             imgsz=640,
             conf=0.5,
-            device="cpu",
+            device=device,
             verbose=False
         )
         result = results[0]
@@ -99,7 +105,7 @@ try:
             for box in santa_boxes:
                 x1, y1, x2, y2 = box.xyxy[0]
                 box_center_x = (x1 + x2) / 2
-                box_center_y = (y1 + y2) / 2
+                box_center_y = (x1 + x2) / 2
 
                 distance = ((box_center_x - frame_center_x) ** 2 +
                             (box_center_y - frame_center_y) ** 2) ** 0.5
@@ -145,10 +151,8 @@ try:
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
         else:
-            # If Santa disappeared recently — keep waiting
             if time.time() - last_seen_time < 0.5:
                 print("Santa disappeared, still waiting...")
-                pass
 
             if arduino:
                 print("Santa lost, timeout reached")
@@ -163,7 +167,6 @@ try:
                 time.sleep(0.2)
             break
 
-# ------------------------ CLEANUP ------------------------
 finally:
     cap.release()
     cv2.destroyAllWindows()
