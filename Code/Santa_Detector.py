@@ -15,7 +15,7 @@ print(f"🚀 Using device: {device}")
 
 # ------------------------ PATHS (CROSS-PLATFORM) ------------------------
 BASE_DIR = Path(__file__).resolve().parent
-MODEL_PATH = BASE_DIR / "YOLO" / "Santa_Claus_Weight.pt"
+MODEL_PATH = BASE_DIR / "Santa_Claus_Weight.pt"
 
 # ------------------------ ARDUINO SETTINGS ------------------------
 arduino_port = 'COM3'
@@ -23,7 +23,7 @@ baudrate = 9600
 last_seen_time = time.time()
 
 try:
-    arduino = serial.Serial('COM3', 9600, timeout=1)
+    arduino = serial.Serial(arduino_port, baudrate, timeout=1)
     time.sleep(2)
     print(f"✅ Arduino connected on {arduino_port}")
 except Exception as e:
@@ -105,7 +105,7 @@ try:
             for box in santa_boxes:
                 x1, y1, x2, y2 = box.xyxy[0]
                 box_center_x = (x1 + x2) / 2
-                box_center_y = (x1 + x2) / 2
+                box_center_y = (y1 + y2) / 2
 
                 distance = ((box_center_x - frame_center_x) ** 2 +
                             (box_center_y - frame_center_y) ** 2) ** 0.5
