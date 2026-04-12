@@ -1,15 +1,13 @@
-# Santa-Turret
-
-Trigger-based real-time object detection system using YOLO that tracks a target ("Santa") and controls two servo motors via Arduino.
+# Real-Time Object Tracking Turret
+Real-time computer vision system that tracks a target object (Santa) using YOLO and controls a dual-axis servo turret via Arduino.
 
 ---
 
 ## Features
 
 -  Real-time webcam video processing  
--  Object detection using Ultralytics YOLOv26
--  Prioritizes class `Santa` detection
--  Selects object closest to frame center as target  
+-  Object detection using Ultralytics YOLO26
+-  Selects object (class: Santa) closest to frame center as target  
 -  Controls 2-axis servo system via Arduino (Serial)  
 -  Model warm-up for faster inference  
 
@@ -61,13 +59,13 @@ pip install ultralytics opencv-python numpy torch pyserial
 │ ├── Santa_Claus_Weight.pt
 │ └── Arduino.ino
 │
-├── STL/
+├── STL/ # 3D printing models
 │ ├── *.stl (parts for 3D-printing)
 │
-├── Kompas 3D/
+├── Kompas 3D/ # CAD source files
 │ ├── *.m3d
 │ ├── *.m3d.bak
-│ └── CAD design files
+│ └── design files
 │
 └── README.md
 ```
@@ -76,14 +74,17 @@ pip install ultralytics opencv-python numpy torch pyserial
 
 ## Arduino Setup
 
-Upload sketch "Arduino.ino" to your Arduino
+Upload Arduino.ino to your board and set the correct COM port in main.py:
+
+arduino_port = 'COM3'
+baudrate = 9600
 
 ---
 
 ## Run Project
 
 ```bash
-python main.py
+python Code/Santa_Detector.py
 ```
 
 Exit:
