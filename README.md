@@ -129,4 +129,4 @@ Example:
 ## Author
 
 Bogdan Lomp  
-GitHub: [Santa-Turret](https://github.com/nskbogdanl/Santa-Turret)
+GitHub: [Real-Time Object Tracking Turret](https://github.com/nskbogdanl/Real-Time-Object-Tracking-Turret)
